@@ -1,0 +1,27 @@
+
+<%
+String [] assetPublisherDisplaysStyles = PropsUtil.getArray(PropsKeys.ASSET_PUBLISHER_DISPLAY_STYLES);
+if (!ArrayUtil.contains(assetPublisherDisplaysStyles, displayStyle)) {
+%>
+
+	<%= LanguageUtil.format(pageContext, "x-is-not-a-display-type", displayStyle) %>
+
+<%
+}
+else{
+	for (String curDisplayStyle : assetPublisherDisplaysStyles) {
+		if (displayStyle.equals(curDisplayStyle)) {
+			String displayStyleJsp = "/html/plugin_asset_publisher/display/" + TextFormatter.format(curDisplayStyle, TextFormatter.N) + ".jsp";
+%>
+			<liferay-util:include 
+				page="<%= displayStyleJsp %>"  
+				portletId = "pluginassetpublisher_WAR_pluginassetpublisherportlet_INSTANCE_vE6X"
+				servletContext="<%=this.getServletContext() %>"
+			/>
+
+<%
+			break;
+		}
+	}
+}
+%>

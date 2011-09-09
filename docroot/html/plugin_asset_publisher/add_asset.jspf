@@ -1,0 +1,96 @@
+<%
+Map<String, PortletURL> addPortletURLs = getAddPortletURLs(liferayPortletRequest, liferayPortletResponse, classNameIds, assetEntryQuery.getAllCategoryIds(), allAssetTagNames);
+%>
+
+<c:if test="<%= !addPortletURLs.isEmpty() %>">
+	<liferay-ui:icon-menu
+		align="left"
+		icon='<%= themeDisplay.getPathThemeImages() + "/common/add.png" %>'
+		message='<%= LanguageUtil.format(pageContext, (groupIds.length == 1) ? "add-new" : "add-new-in-x", new Object[] {(GroupLocalServiceUtil.getGroup(groupId)).getDescriptiveName()}) %>'
+		showWhenSingleIcon="<%= true %>"
+	>
+
+		<%
+		for (Map.Entry<String, PortletURL> entry : addPortletURLs.entrySet()) {
+			String className = entry.getKey();
+
+			PortletURL addPortletURL = entry.getValue();
+
+			addPortletURL.setParameter("groupId", String.valueOf(groupId));
+
+			String addPortletURLString = addPortletURL.toString();
+
+			addPortletURLString = HttpUtil.addParameter(addPortletURLString, "doAsGroupId", groupId);
+			addPortletURLString = HttpUtil.addParameter(addPortletURLString, "refererPlid", plid);
+
+			AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
+		%>
+
+			<liferay-ui:icon
+				message='<%= "model.resource." + className %>'
+				src="<%= assetRendererFactory.getIconPath(renderRequest) %>"
+				url='<%= addPortletURLString %>'
+			/>
+
+		<%
+		}
+		%>
+
+	</liferay-ui:icon-menu>
+</c:if>
+
+<%!
+public PortletURL getAddPortletURL(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse, String className, long[] allAssetCategoryIds, String[] allAssetTagNames) throws Exception {
+	ThemeDisplay themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+	AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
+
+	PortletURL addPortletURL = null;
+
+	if (assetRendererFactory != null) {
+		addPortletURL = assetRendererFactory.getURLAdd(liferayPortletRequest, liferayPortletResponse);
+
+		if (addPortletURL != null) {
+			addPortletURL.setWindowState(WindowState.MAXIMIZED);
+			addPortletURL.setPortletMode(PortletMode.VIEW);
+
+			addPortletURL.setParameter("redirect", themeDisplay.getURLCurrent());
+			addPortletURL.setParameter("backURL", themeDisplay.getURLCurrent());
+
+			String referringPortletResource = ParamUtil.getString(liferayPortletRequest, "portletResource");
+
+			if (Validator.isNotNull(referringPortletResource)) {
+				addPortletURL.setParameter("referringPortletResource", referringPortletResource);
+			}
+			else {
+				PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+				addPortletURL.setParameter("referringPortletResource", portletDisplay.getId());
+
+				addPortletURL.setParameter("assetCategoryIds", StringUtil.merge(allAssetCategoryIds));
+				addPortletURL.setParameter("assetTagNames", StringUtil.merge(allAssetTagNames));
+			}
+		}
+	}
+
+	return addPortletURL;
+}
+
+public Map<String, PortletURL> getAddPortletURLs(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse, long[] classNameIds, long[] allAssetCategoryIds, String[] allAssetTagNames) throws Exception {
+	ThemeDisplay themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+	Map<String, PortletURL> addPortletURLs = new TreeMap<String, PortletURL>(new ModelResourceComparator(themeDisplay.getLocale()));
+
+	for (long classNameId : classNameIds) {
+		ClassName className = ClassNameServiceUtil.getClassName(classNameId);
+
+		PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, className.getValue(), allAssetCategoryIds, allAssetTagNames);
+
+		if (addPortletURL != null) {
+			addPortletURLs.put(className.getValue(), addPortletURL);
+		}
+	}
+
+	return addPortletURLs;
+}
+%>

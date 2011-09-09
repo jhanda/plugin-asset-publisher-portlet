@@ -1,0 +1,44 @@
+
+<%
+for (int assetEntryIndex = 0; assetEntryIndex < results.size(); assetEntryIndex++) {
+	AssetEntry assetEntry = (AssetEntry)results.get(assetEntryIndex);
+
+	String className = PortalUtil.getClassName(assetEntry.getClassNameId());
+	long classPK = assetEntry.getClassPK();
+
+	AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
+
+	if (assetRendererFactory == null) {
+		continue;
+	}
+
+	AssetRenderer assetRenderer = assetRendererFactory.getAssetRenderer(classPK);
+
+	String title = assetRenderer.getTitle(locale);
+
+	boolean show = true;
+	boolean print = false;
+
+	request.setAttribute("view.jsp-assetEntryIndex", new Integer(assetEntryIndex));
+
+	request.setAttribute("view.jsp-assetEntry", assetEntry);
+	request.setAttribute("view.jsp-assetRendererFactory", assetRendererFactory);
+	request.setAttribute("view.jsp-assetRenderer", assetRenderer);
+
+	request.setAttribute("view.jsp-title", title);
+
+	request.setAttribute("view.jsp-show", new Boolean(show));
+	request.setAttribute("view.jsp-print", new Boolean(print));
+
+	try {
+%>
+
+		<%@ include file="/html/plugin_asset_publisher/view_display.jspf" %>
+
+<%
+	}
+	catch (Exception e) {
+		_log.error(e.getMessage());
+	}
+}
+%>
