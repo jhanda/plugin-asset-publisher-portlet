@@ -15,7 +15,7 @@ else{
 %>
 			<liferay-util:include 
 				page="<%= displayStyleJsp %>"  
-				portletId = "pluginassetpublisher_WAR_pluginassetpublisherportlet_INSTANCE_vE6X"
+				portletId = "<%= portletId %>"
 				servletContext="<%=this.getServletContext() %>"
 			/>
 

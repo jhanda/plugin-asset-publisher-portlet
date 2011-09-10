@@ -42,11 +42,17 @@ String viewURL = viewInContext ? assetRenderer.getURLViewInContext(liferayPortle
 String viewURLMessage = viewInContext ? assetRenderer.getViewInContextMessage() : "read-more-x-about-x";
 
 viewURL = _checkViewURL(viewURL, currentURL, themeDisplay);
+
 %>
 
 <c:if test="<%= show && assetRenderer.hasViewPermission(permissionChecker) %>">
 	<div class="asset-abstract">
-		<liferay-util:include page="/html/plugin_asset_publisher/asset_actions.jsp" />
+
+		<liferay-util:include 
+			page="/html/plugin_asset_publisher/asset_actions.jsp"
+			portletId ="<%= portletId %>"
+			servletContext="<%=this.getServletContext() %>"
+		/>
 
 		<h3 class="asset-title">
 			<c:choose>

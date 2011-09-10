@@ -203,6 +203,8 @@
 	
 	PortletPreferences preferences = renderRequest.getPreferences();
 
+	String portletId = PortalUtil.getPortletId(renderRequest);
+
 	String portletResource = ParamUtil.getString(request,
 			"portletResource");
 
