@@ -43,10 +43,15 @@
 <%@ page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@ page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 
+
+<%@ page import="com.liferay.portal.kernel.servlet.SessionErrors" %>
+
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayPortletResponse"%>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayPortletRequest"%>
+<%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 
 <%@ page import="com.liferay.portal.kernel.util.ArrayUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.Constants"%>
 <%@ page import="com.liferay.portal.kernel.util.DocumentConversionUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.GetterUtil"%>
@@ -77,13 +82,14 @@
 <%@ page import="com.liferay.portal.service.GroupLocalServiceUtil"%>
 
 <%@ page import="com.liferay.portal.util.PortalUtil"%>
+<%@ page import="com.liferay.portal.util.PortletKeys"%>
+
 
 <%@ page import="com.liferay.portlet.PortalPreferences"%>
 
 <%@ page import="com.liferay.portlet.PortletPreferencesFactoryUtil"%>
 
-<%@ page
-	import="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil"%>
+<%@ page import="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil"%>
 <%@ page import="com.liferay.portlet.asset.NoSuchEntryException"%>
 <%@ page import="com.liferay.portlet.asset.NoSuchTagException"%>
 <%@ page import="com.liferay.portlet.asset.NoSuchTagPropertyException"%>
@@ -94,47 +100,30 @@
 <%@ page import="com.liferay.portlet.asset.model.AssetTag"%>
 <%@ page import="com.liferay.portlet.asset.model.AssetTagProperty"%>
 <%@ page import="com.liferay.portlet.asset.model.AssetVocabulary"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetEntryServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetTagLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetTagPropertyLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.persistence.AssetEntryQuery"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetEntryServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetTagLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetTagPropertyLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.asset.service.persistence.AssetEntryQuery"%>
 <%@ page import="com.liferay.portlet.blogs.model.BlogsEntry"%>
-<%@ page
-	import="com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.blogs.service.BlogsEntryServiceUtil"%>
+<%@ page import="com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.blogs.service.BlogsEntryServiceUtil"%>
 <%@ page import="com.liferay.portlet.bookmarks.model.BookmarksEntry"%>
 <%@ page import="com.liferay.portlet.bookmarks.model.BookmarksFolder"%>
-<%@ page
-	import="com.liferay.portlet.bookmarks.model.BookmarksFolderConstants"%>
-<%@ page
-	import="com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.bookmarks.service.BookmarksFolderLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.bookmarks.model.BookmarksFolderConstants"%>
+<%@ page import="com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.bookmarks.service.BookmarksFolderLocalServiceUtil"%>
 <%@ page import="com.liferay.portlet.documentlibrary.model.DLFileEntry"%>
 <%@ page import="com.liferay.portlet.documentlibrary.model.DLFolder"%>
-<%@ page
-	import="com.liferay.portlet.documentlibrary.model.DLFolderConstants"%>
-<%@ page
-	import="com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.documentlibrary.service.DLFileEntryServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.documentlibrary.service.DLFolderServiceUtil"%>
+<%@ page import="com.liferay.portlet.documentlibrary.model.DLFolderConstants"%>
+<%@ page import="com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.documentlibrary.service.DLFileEntryServiceUtil"%>
+<%@ page import="com.liferay.portlet.documentlibrary.service.DLFolderServiceUtil"%>
 <%@ page import="com.liferay.portlet.documentlibrary.util.DLUtil"%>
 <%@ page import="com.liferay.portlet.imagegallery.model.IGFolder"%>
-<%@ page
-	import="com.liferay.portlet.imagegallery.model.IGFolderConstants"%>
+<%@ page import="com.liferay.portlet.imagegallery.model.IGFolderConstants"%>
 <%@ page import="com.liferay.portlet.imagegallery.model.IGImage"%>
 <%@ page
 	import="com.liferay.portlet.imagegallery.service.IGFolderLocalServiceUtil"%>
@@ -169,6 +158,7 @@
 <%@ page import="com.liferay.util.xml.DocUtil"%>
 
 <%@ page import="java.text.Format"%>
+<%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.Set"%>

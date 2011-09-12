@@ -1,0 +1,63 @@
+<%--
+/**
+ * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of the Liferay Enterprise
+ * Subscription License ("License"). You may not use this file except in
+ * compliance with the License. You can obtain a copy of the License by
+ * contacting Liferay, Inc. See the License for the specific language governing
+ * permissions and limitations under the License, including but not limited to
+ * distribution rights of the Software.
+ *
+ *
+ *
+ */
+--%>
+
+<%
+PortletURL printAssetURL = renderResponse.createRenderURL();
+
+printAssetURL.setWindowState(LiferayWindowState.POP_UP);
+
+printAssetURL.setParameter("struts_action", "/asset_publisher/view_content");
+printAssetURL.setParameter("assetEntryId", String.valueOf(assetEntry.getEntryId()));
+printAssetURL.setParameter("viewMode", Constants.PRINT);
+printAssetURL.setParameter("type", assetRendererFactory.getType());
+
+if (Validator.isNotNull(assetRenderer.getUrlTitle())) {
+	if (assetRenderer.getGroupId() != scopeGroupId) {
+		printAssetURL.setParameter("groupId", String.valueOf(assetRenderer.getGroupId()));
+	}
+
+	printAssetURL.setParameter("urlTitle", assetRenderer.getUrlTitle());
+}
+%>
+
+<c:choose>
+	<c:when test="<%= print %>">
+		<liferay-ui:icon
+			image="print"
+			label="<%= true %>"
+			message='<%= LanguageUtil.format(pageContext, "print-x-x", new Object[] {"aui-helper-hidden-accessible", assetRenderer.getTitle(locale)}) %>'
+			url="javascript:print();"
+		/>
+
+		<aui:script>
+			print();
+		</aui:script>
+	</c:when>
+	<c:otherwise>
+		<liferay-ui:icon
+			image="print"
+			label="<%= true %>"
+			message='<%= LanguageUtil.format(pageContext, "print-x-x", new Object[] {"aui-helper-hidden-accessible", assetRenderer.getTitle(locale)}) %>'
+			url='<%= "javascript:" + renderResponse.getNamespace() + "printPage_" + assetEntryIndex + "();" %>'
+		/>
+
+		<aui:script>
+			function <portlet:namespace />printPage_<%= assetEntryIndex %>() {
+				window.open('<%= printAssetURL %>', '', "directories=0,height=480,left=80,location=1,menubar=1,resizable=1,scrollbars=yes,status=0,toolbar=0,top=180,width=640");
+			}
+		</aui:script>
+	</c:otherwise>
+</c:choose>

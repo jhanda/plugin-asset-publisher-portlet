@@ -21,7 +21,7 @@ if (Validator.isNull(title)) {
 
 PortletURL viewFullContentURL = renderResponse.createRenderURL();
 
-viewFullContentURL.setParameter("struts_action", "/asset_publisher/view_content");
+viewFullContentURL.setParameter("jspPage", "/html/plugin_asset_publisher/view_content.jsp");
 viewFullContentURL.setParameter("assetEntryId", String.valueOf(assetEntry.getEntryId()));
 viewFullContentURL.setParameter("type", assetRendererFactory.getType());
 
