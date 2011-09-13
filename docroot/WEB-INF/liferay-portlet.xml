@@ -6,6 +6,7 @@
 	<portlet>
 		<portlet-name>plugin-asset-publisher</portlet-name>
 		<icon>/html/icons/asset_publisher.png</icon>
+		<configuration-action-class>com.liferay.plugin.portlet.assetpublisher.action.ConfigurationActionImpl</configuration-action-class>
 		<instanceable>true</instanceable>
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
